@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 const BookingRow = ({ booking, handleDelete,handleConfirm }) => {
 
     const { _id, img, price, date, service, status } = booking
-    //console.log(booking)
+    
 
     
 

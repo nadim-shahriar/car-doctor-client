@@ -2,13 +2,17 @@ import login from '../../assets/images/login/login.svg'
 import facebook from '../../assets/icons/facebook.png'
 import linkedin from '../../assets/icons/linkedin.png'
 import google from '../../assets/icons/google 1.png'
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { useContext } from 'react';
 import { AuthContext } from '../../Provider/AuthProvider';
 
 const Login = () => {
 
     const { signIn } = useContext(AuthContext);
+    const location = useLocation();
+    // console.log(location)
+    const navigate = useNavigate()
 
     const handleLogin = e => {
         e.preventDefault();
@@ -17,12 +21,22 @@ const Login = () => {
         const form = e.target;
         const email = form.email.value
         const password = form.password.value
-        console.log( email, password)
+        console.log(email, password)
 
         signIn(email, password)
             .then(result => {
-                const user = result.user
-                console.log(user)
+                const loggedInUser = result.user
+                console.log(loggedInUser)
+                const user = { email }
+               
+
+                axios.post('http://localhost:5000/jwt', user, {withCredentials: true})
+                    .then(res => {
+                        console.log(res.data)
+                        if(res.data.success){
+                            navigate(location?.state ? location?.state : '/')
+                        }
+                    })
             })
             .catch(error => console.log(error))
 
@@ -32,7 +46,7 @@ const Login = () => {
         <div className=" bg-base-100 min-h-screen">
             <div className="hero-content flex-col lg:flex-row">
                 <div className="">
-                    <img className='mr-[70px] mt-[30px]' src={login} alt=""/>
+                    <img className='mr-[70px] mt-[30px]' src={login} alt="" />
                 </div>
                 <div className="card bg-base-100 w-1/2 shrink-0 shadow-2xl">
                     <div className="border-[#D0D0D0] border rounded-md w-full py-[75px] px-[75px]">
